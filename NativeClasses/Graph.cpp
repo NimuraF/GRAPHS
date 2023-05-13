@@ -1,0 +1,196 @@
+#include "pch.h"
+#include "Graph.h"
+#include "MException.h"
+
+Graph::Graph(std::string path, int type) {
+	switch (type) {
+		
+	case 1: {
+		if (this->parseAdjencyMatrix(path)) {
+
+		}
+		else {
+			throw MException("Не удалось корректно открыть файл!");
+		}
+	}
+
+	}
+}
+
+
+/* ФУНКЦИИ ВОЗВРАЩАЮЩИЕ ПРЕДСТАВЛЕНИЯ ГРАФА */
+std::vector < std::vector <int> > & Graph::adjencyMatrix() { //Возвращает МАТРИЦУ СМЕЖНОСТИ
+	/* Создаём ссылку на вектор матрицы смежности и возвращаем его*/
+	std::vector < std::vector <int> >& AM = this->AMatrix;
+	return AM;
+}
+std::vector <Graph::EdgesListElement> & Graph::edgesList() { //Возвращет СПИСОК РЁБЕР
+	/* Выводим список рёбер на экран*/
+	for (int i = 0; i < this->EList.size(); i++) {
+		std::cout << EList[i].Start << " " << EList[i].End << " " << EList[i].Weight << std::endl;
+	}
+	/* Создаём ссылку на вектор матрицы смеждности и возвращаем его*/
+	std::vector <EdgesListElement> & EL = this->EList;
+	return EL;
+}
+std::vector <Graph::AdjencyListVertex> & Graph::adjencyList() { //Возвращает СПИСОК СМЕЖНОСТИ
+	for (int i = 0; i < this->AList.size(); i++) {
+		std::cout << this->AList[i].Vertex << " - ";
+		for (int j = 0; j < this->AList[i].VertexAndWeight.size(); j++) {
+			std::cout << "[" << this->AList[i].VertexAndWeight[j].Vertex << ", " << this->AList[i].VertexAndWeight[j].Weight << "] ";
+		}
+		std::cout << std::endl;
+	}
+	std::vector <AdjencyListVertex>& AL = this->AList;
+	return AL;
+}
+
+
+/* Реализация функций смены представлений */
+void Graph::AMtoEL() { //Смена представления МАТРИЦА СМЕЖНОСТИ -> СПИСОК РЁБЕР
+	for (int i = 0; i < this->AMatrix.size(); i++) {
+		for (int j = 0; j < this->AMatrix.size(); j++) {
+			if (this->AMatrix[i][j] != 0) {
+				EdgesListElement row;
+				row.Start = i; //Добавляем начальную точку (1 вершину)
+				row.End = j; //Добавляем конечную вершину, с которой есть связь
+				row.Weight = this->AMatrix[i][j]; //Добавляем в 3 колонку вес ребра между ними
+				this->EList.push_back(row);
+			}
+		}
+	}
+}
+void Graph::AMtoAL() {
+	for (int i = 0; i < this->AMatrix.size(); i++) {
+		AdjencyListVertex Vertex;
+		Vertex.Vertex = i;
+		for (int j = 0; j < this->AMatrix.size(); j++) {
+			if (this->AMatrix[i][j] != 0) {
+				AdjencyListVertexPair Pair;
+				Pair.Vertex = j;
+				Pair.Weight = this->AMatrix[i][j];
+				Vertex.VertexAndWeight.push_back(Pair);
+			}
+		}
+		this->AList.push_back(Vertex);
+	}
+}
+
+
+/* Основные функции графа */
+bool Graph::isDirected() { //Функция, возвращающая true, если граф ориентированный и false - если нет
+	for (int i = 0; i < this->AMatrix.size(); i++) {
+		for (int j = 0; j < this->AMatrix.size(); j++) {
+			if (this->AMatrix[i][j] != this->AMatrix[j][i]) {
+				return true;
+			}
+		}
+	}
+	return false;
+}
+bool Graph::isEdge(int Start, int End) { //Проверка существования ребра
+	if (this->AMatrix[Start][End] != 0 || this->AMatrix[End][Start] != 0) {
+		return true;
+	}
+	else {
+		return false;
+	}
+}
+bool Graph::isArc(int Start, int End) { //Проверяет, есть ли между вершинами дуга
+	if (this->AMatrix[Start][End] != 0) {
+		return true;
+	}
+	else {
+		return false;
+	}
+}
+
+
+/* РЕАЛИЗАЦИЯ ФУНКЦИЯ ПАРСИНГА */
+bool Graph::parseAdjencyMatrix(std::string path) {
+	std::ifstream file; //Создаём поток для чтения из файла
+	file.open(path); //Открываем файл
+
+	/* Если файл не удалось открыть, бросаем исключение */
+	if (!file) {
+		return false;
+	}
+
+
+	std::string data; //Буфер для строки
+	int buffer; //Буфер для чисел
+	int rows = 0; // Количество строк
+	int elements = 0; //Количество элементов
+
+	/* Сначала проходимся по строкам и считаем их кол-во, пустые строки пропускаем */
+	while (!file.eof()) {
+		getline(file, data);
+		if (data != "") {
+			rows++;
+		}
+	}
+
+	/* Чистим флаги для правильного перемещения указателя */
+	file.clear();
+
+	/* Перемещаем указатель в начало файла */
+	file.seekg(0L, std::ios_base::beg);
+
+	/* Проходимся по всем элементам и считаем их количество */
+	while (!file.eof()) {
+		file >> buffer;
+		elements++;
+	}
+
+	/* Снова сбрасываем указатель на начало, так как нам в дальнейшем может потребоваться с ним работать (в случае верных данных) */
+	file.clear();
+	file.seekg(0L, std::ios_base::beg);
+
+	/*
+	Проверяем матрицу на факт того, что она квадратная (матрица смежности обязана быть квадратной),
+	для этого возводим кол-во строк в квадрат и сравниваем с посчитанным количеством элементов
+	*/
+	if (elements - 1 != rows * rows) {
+		/* Закрываем соединение с файлом */
+		file.close();
+		return false;
+	}
+	else {
+		/* Формируем одномерный массив всех элементов */
+		int step = 0;
+		int* AllElements = new int[elements - 1];
+
+		//Записываем все элементы из файла в этот одномерный массив
+		while (!file.eof()) {
+			file >> AllElements[step];
+			step++;
+		}
+
+		int step2 = 0;
+
+		/* Переписываем данные из одномерного массива в двумерный */
+		for (int x = 0; x < rows; x++) {
+			std::vector <int> row;
+			for (int y = 0; y < rows; y++) {
+				row.push_back(AllElements[step2]);
+				step2++;
+			}
+			this->AMatrix.push_back(row);
+		}
+
+		/* Закрываем соединение с файлом */
+		file.close();
+
+		/* Чистим память от одномерного массива */
+		delete[] AllElements;
+
+		/* Вызываем функцию преобразования матрицы смежности в список рёбер и список смежности */
+		this->AMtoEL();
+		this->AMtoAL();
+
+		return true;
+	}
+}
+bool Graph::parseEdgesList(std::string path) {
+	return false;
+}
