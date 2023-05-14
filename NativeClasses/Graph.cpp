@@ -34,13 +34,7 @@ std::vector <Graph::EdgesListElement> & Graph::edgesList() { //Возвращет СПИСОК 
 	return EL;
 }
 std::vector <Graph::AdjencyListVertex> & Graph::adjencyList() { //Возвращает СПИСОК СМЕЖНОСТИ
-	for (int i = 0; i < this->AList.size(); i++) {
-		std::cout << this->AList[i].Vertex << " - ";
-		for (int j = 0; j < this->AList[i].VertexAndWeight.size(); j++) {
-			std::cout << "[" << this->AList[i].VertexAndWeight[j].Vertex << ", " << this->AList[i].VertexAndWeight[j].Weight << "] ";
-		}
-		std::cout << std::endl;
-	}
+	/* Создаём ссылку на вектор cписка смежности и возвращаем его*/
 	std::vector <AdjencyListVertex>& AL = this->AList;
 	return AL;
 }

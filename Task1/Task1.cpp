@@ -17,7 +17,6 @@ Task1::Task1(int argc, char** argv) {
 			output.open(this->getCurrentOutputPath());
 		}
 
-
 		Graph MyGraph(this->getCurrentPath(), this->getCurrentFormat());
 		this->VertexDegrees(MyGraph);
 		this->ShortestDistanceMatrix(MyGraph);
