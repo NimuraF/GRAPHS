@@ -25,11 +25,7 @@ std::vector < std::vector <int> > & Graph::adjencyMatrix() { //Возвращает МАТРИЦ
 	return AM;
 }
 std::vector <Graph::EdgesListElement> & Graph::edgesList() { //Возвращет СПИСОК РЁБЕР
-	/* Выводим список рёбер на экран*/
-	for (int i = 0; i < this->EList.size(); i++) {
-		std::cout << EList[i].Start << " " << EList[i].End << " " << EList[i].Weight << std::endl;
-	}
-	/* Создаём ссылку на вектор матрицы смеждности и возвращаем его*/
+	/* Создаём ссылку на вектор списка рёбер и возвращаем его*/
 	std::vector <EdgesListElement> & EL = this->EList;
 	return EL;
 }
@@ -37,6 +33,10 @@ std::vector <Graph::AdjencyListVertex> & Graph::adjencyList() { //Возвращает СПИ
 	/* Создаём ссылку на вектор cписка смежности и возвращаем его*/
 	std::vector <AdjencyListVertex>& AL = this->AList;
 	return AL;
+}
+std::vector < std::vector <int> >& Graph::adjencyListWW() { //Возвращает СПИСОК СМЕЖНОСТИ БЕЗ ВЕСОВ
+	std::vector < std::vector <int> > & ALWW = this->AListWW;
+	return ALWW;
 }
 
 
@@ -54,7 +54,7 @@ void Graph::AMtoEL() { //Смена представления МАТРИЦА СМЕЖНОСТИ -> СПИСОК РЁБЕР
 		}
 	}
 }
-void Graph::AMtoAL() {
+void Graph::AMtoAL() { //Смена представления МАТРИЦА СМЕЖНОСТИ -> СПИСОК СМЕЖНОСТИ
 	for (int i = 0; i < this->AMatrix.size(); i++) {
 		AdjencyListVertex Vertex;
 		Vertex.Vertex = i;
@@ -67,6 +67,17 @@ void Graph::AMtoAL() {
 			}
 		}
 		this->AList.push_back(Vertex);
+	}
+}
+void Graph::AMtoALWW() { //Смена представления МАТРИЦА СМЕЖНОСТИ -> СПИСОК СМЕЖНОСТИ БЕЗ ВЕСОВ
+	for (int i = 0; i < this->AMatrix.size(); i++) {
+		std::vector <int> row;
+		for (int j = 0; j < this->AMatrix.size(); j++) {
+			if (this->AMatrix[i][j] != 0) {
+				row.push_back(j);
+			}
+		}
+		this->AListWW.push_back(row);
 	}
 }
 
@@ -181,6 +192,7 @@ bool Graph::parseAdjencyMatrix(std::string path) {
 		/* Вызываем функцию преобразования матрицы смежности в список рёбер и список смежности */
 		this->AMtoEL();
 		this->AMtoAL();
+		this->AMtoALWW();
 
 		return true;
 	}

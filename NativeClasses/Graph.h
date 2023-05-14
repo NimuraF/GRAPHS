@@ -23,12 +23,14 @@ private:
 	std::vector <std::vector<int> > AMatrix; //Матрица смежности
 	std::vector <EdgesListElement> EList; //Список рёбер
 	std::vector <AdjencyListVertex> AList; //Список смежности
+	std::vector <std::vector<int> > AListWW; //Список смежности без весов
 
 
 	void ALtoAM(); //Метод для преобразования списка смежности в матрицу
 	void ELtoAM(); //Метод для преобразования списка ребёр в матрицу смежности
 	void AMtoEL(); //Метод для преобразования матрицы смежности в список рёбер
 	void AMtoAL(); //Метод для преобразования матрицы смежности в список смежности
+	void AMtoALWW(); //Метод для преобразования матрицы смежности в список смежности без весов
 
 	bool parseAdjencyMatrix(std::string path);
 	bool parseEdgesList(std::string path);
@@ -54,7 +56,8 @@ public:
 
 	/* ФУНКЦИИ ПРЕДСТАВЛЕНИЯ И ВОЗВРАТА ЗНАЧЕНИЙ */
 	std::vector < std::vector <int> > & adjencyMatrix(); //Вернуть ссылку на матрицу смежности
-	std::vector <EdgesListElement> & edgesList(); //Вернуть список смежности
-	std::vector <AdjencyListVertex> & adjencyList();
+	std::vector <EdgesListElement> & edgesList(); //Вернуть список рёбер
+	std::vector <AdjencyListVertex> & adjencyList(); //Вернуть список смежности
+	std::vector < std::vector <int> > & adjencyListWW(); //Вернуть список смежности без весов
 };
 
