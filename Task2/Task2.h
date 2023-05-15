@@ -26,7 +26,7 @@ public:
 	void FindConnectionComponents(Graph&, int); //Алгоритм поиска в ширину
 	void AllComponents(Graph&); //Функция, для определения всех компонент
 	void dfs1(std::vector < std::vector <int> > &, int); //Алгоритм поиска в глубину
-	void dfs2(std::vector < std::vector <int> > &, int); //Алгориттм поиска в глубину инвертированного графа
+	void dfs2(std::vector < std::vector <int> > &, int); //Алгоритм поиска в глубину инвертированного графа
 	void FindStrongComponents(Graph&);
 };
 

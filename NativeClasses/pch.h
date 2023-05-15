@@ -6,6 +6,7 @@
 #include <iomanip>
 #include <algorithm>
 #include <queue>
+#include <stack>
 #include <string>
 #include <fstream>
 #include <time.h>

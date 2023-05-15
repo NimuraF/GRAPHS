@@ -111,7 +111,7 @@ bool Graph::isArc(int Start, int End) { //Проверяет, есть ли между вершинами дуг
 }
 
 
-/* РЕАЛИЗАЦИЯ ФУНКЦИЯ ПАРСИНГА */
+/* РЕАЛИЗАЦИЯ ФУНКЦИЙ ПАРСИНГА */
 bool Graph::parseAdjencyMatrix(std::string path) {
 	std::ifstream file; //Создаём поток для чтения из файла
 	file.open(path); //Открываем файл
