@@ -7,7 +7,21 @@ Graph::Graph(std::string path, int type) {
 		
 	case 1: {
 		if (this->parseAdjencyMatrix(path)) {
+			/* Вызываем функцию преобразования матрицы смежности в список рёбер и список смежности */
+			this->AMtoEL();
+			this->AMtoAL();
+			this->AMtoALWW();
+			break;
+		}
+		else {
+			throw MException("Не удалось корректно открыть файл!");
+		}
+	}
 
+	case 2: {
+		if (this->parseEdgesList(path)) {
+
+			break;
 		}
 		else {
 			throw MException("Не удалось корректно открыть файл!");
@@ -189,14 +203,17 @@ bool Graph::parseAdjencyMatrix(std::string path) {
 		/* Чистим память от одномерного массива */
 		delete[] AllElements;
 
-		/* Вызываем функцию преобразования матрицы смежности в список рёбер и список смежности */
-		this->AMtoEL();
-		this->AMtoAL();
-		this->AMtoALWW();
-
 		return true;
 	}
 }
 bool Graph::parseEdgesList(std::string path) {
-	return false;
+	std::ifstream file; //Создаём поток для чтения из файла
+	file.open(path); //Открываем файл
+
+	/* Если файл не удалось открыть, бросаем исключение */
+	if (!file) {
+		return false;
+	}
+
+
 }
