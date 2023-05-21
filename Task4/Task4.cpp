@@ -21,14 +21,17 @@ void Task4::FindSpanningTree(Graph& MyGraph) {
 
 	case 1: {
 		this->Kruskal(MyGraph);
+		break;
 	}
 
 	case 2: {
 		this->Prima(MyGraph);
+		break;
 	}
 
 	case 3: {
-
+		this->Boruvki(MyGraph);
+		break;
 	}
 
 	case 4: {
@@ -38,10 +41,17 @@ void Task4::FindSpanningTree(Graph& MyGraph) {
 		unsigned int end = clock();
 		this->TimerKruskala = end - start;
 
+		/* Время для алгоритма Прима */
 		start = clock();
 		this->Prima(MyGraph);
 		end = clock();
 		this->TimerPrima = end - start;
+
+		start = clock();
+		this->Boruvki(MyGraph);
+		end = clock();
+		this->TimerBoruvki = end - start;
+		break;
 	}
 
 	}
@@ -136,7 +146,61 @@ void Task4::Prima(Graph& MyGraph) {
 
 }
 
-/* СОздание неориентированного (соотнесённого графа) из орграфа*/
+/* АЛГОРИТМ БОРУВКИ*/
+void Task4::Boruvki(Graph& MyGraph) {
+	
+	this->clearContainers();
+
+	/* Создаём соотнесённый граф */
+	if (MyGraph.isDirected()) {
+		this->createUndirectedGrah(MyGraph);
+	}
+
+	std::vector < std::vector <int> > trees;
+
+	for (int i = 0; i < MyGraph.adjencyMatrix().size(); i++) {
+		std::vector <int> currentTree;
+		currentTree.push_back(i);
+		trees.push_back(currentTree);
+	}
+
+	
+
+	while (trees.size() > 1) {
+		for (int i = 0; i < trees.size(); i++) { //Компонента, которую берём для сравнения
+			int min = 10000000;
+			int ConnectionVertex = -1;
+			int startVertex = -1;
+			int componentNumber = -1;
+			for (int j = 0; j < trees[i].size(); j++) { //Вершина внутри компоненты
+				for (int z = 0; z < trees.size(); z++) { //Компонента, с которой сравниваем
+					if (i != z) {
+						for (int v = 0; v < trees[z].size(); v++) { //Список вершин внутри компоненты, с которой сравниваем
+							if (MyGraph.adjencyMatrix()[trees[i][j]][trees[z][v]] != 0 && MyGraph.adjencyMatrix()[trees[i][j]][trees[z][v]] < min && trees[i][j] != trees[z][v]) {
+								min = MyGraph.adjencyMatrix()[trees[i][j]][trees[z][v]];
+								ConnectionVertex = trees[z][v];
+								startVertex = trees[i][j];
+								componentNumber = z;
+							}
+						}
+					}
+				}
+			}
+			if (min != 10000000 && ConnectionVertex != -1 && componentNumber != -1) {
+				this->SpanningTree.push_back(std::pair <int, int>(startVertex, ConnectionVertex));
+				for (int p = 0; p < trees[componentNumber].size(); p++) {
+					trees[i].push_back(trees[componentNumber][p]);
+				}
+				this->SumEdgeWeight += min;
+				trees[componentNumber].clear();
+				trees.erase(trees.begin() + componentNumber);
+				std::vector< std::vector <int> >(trees).swap(trees);
+			}
+		}
+	}
+}
+
+/* Создание неориентированного (соотнесённого графа) из орграфа*/
 void Task4::createUndirectedGrah(Graph& MyGraph) {
 	for (int i = 0; i < MyGraph.adjencyMatrix().size(); i++) {
 		for (int j = 0; j < MyGraph.adjencyMatrix().size(); j++) {
@@ -172,7 +236,7 @@ void Task4::showSpanningTreeAndWeight() {
 		if (this->currentAlgorithm == 4) {
 			std::cout << "TimerKruskala = " << this->TimerKruskala << "(ms)" << std::endl;
 			std::cout << "TimerPrima = " << this->TimerPrima << "(ms)" << std::endl;
-			std::cout << "TimerBorukvi = " << this->TimerBorukvi << "(ms)" << std::endl;
+			std::cout << "TimerBoruvki = " << this->TimerBoruvki << "(ms)" << std::endl;
 		}
 	}
 	else {
@@ -189,7 +253,7 @@ void Task4::showSpanningTreeAndWeight() {
 			if (this->currentAlgorithm == 4) {
 				output << "TimerKruskala = " << this->TimerKruskala << "(ms)" << std::endl;
 				output << "TimerPrima = " << this->TimerPrima << "(ms)" << std::endl;
-				output << "TimerBorukvi = " << this->TimerBorukvi << "(ms)" << std::endl;
+				output << "TimerBoruvki = " << this->TimerBoruvki << "(ms)" << std::endl;
 			}
 			output.close();
 		}

@@ -16,7 +16,7 @@ private:
 
 	unsigned int TimerKruskala = 0;
 	unsigned int TimerPrima = 0;
-	unsigned int TimerBorukvi = 0;
+	unsigned int TimerBoruvki = 0;
 
 public:
 	/* Технические параметры таска*/
@@ -32,5 +32,6 @@ public:
 
 	void Kruskal(Graph&); //Алгоритм крускала
 	void Prima(Graph&); //Алгоритм Прима
+	void Boruvki(Graph&); //Алгоритм Борувки
 };
 

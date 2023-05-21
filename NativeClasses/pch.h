@@ -6,6 +6,7 @@
 #include <iomanip>
 #include <algorithm>
 #include <queue>
+#include <iterator>
 #include <stack>
 #include <string>
 #include <fstream>
