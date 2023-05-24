@@ -11,16 +11,18 @@ Graph::Graph(std::string path, int type) {
 			this->AMtoEL();
 			this->AMtoAL();
 			this->AMtoALWW();
-			break;
 		}
 		else {
 			throw MException("Не удалось корректно открыть файл!");
 		}
+		break;
 	}
 
 	case 2: {
 		if (this->parseEdgesList(path)) {
-
+			this->ELtoAM();
+			this->AMtoAL();
+			this->AMtoALWW();
 			break;
 		}
 		else {
@@ -92,6 +94,29 @@ void Graph::AMtoALWW() { //Смена представления МАТРИЦА СМЕЖНОСТИ -> СПИСОК СМЕЖН
 			}
 		}
 		this->AListWW.push_back(row);
+	}
+}
+void Graph::ELtoAM() { //Смена представления СПИСОК РЁБЕР -> МАТРИЦА СМЕЖНОСТИ
+	int VC = this->EList[EList.size() - 1].Start + 1;
+	for (int i = 0; i < VC; i++) {
+		std::vector < std::pair <int, int> > rows;
+		for (int z = 0; z < this->EList.size(); z++) {
+			if (this->EList[z].Start == i) {
+				rows.push_back(std::pair <int, int>(EList[z].End, EList[z].Weight));
+			}
+		}
+
+		std::vector <int> row;
+		/* Сначала всё зануляем */
+		for (int j = 0; j < VC; j++) {
+			row.push_back(0);
+		}
+
+		for (int p = 0; p < rows.size(); p++) {
+			row[rows[p].first] = rows[p].second;
+		}
+
+		AMatrix.push_back(row);
 	}
 }
 
@@ -218,5 +243,37 @@ bool Graph::parseEdgesList(std::string path) {
 		return false;
 	}
 
+	std::string data; //Буфер для строки
 
+	while (!file.eof()) {
+		getline(file, data);
+		if (data != "") {
+			std::vector <int> elements;
+			const char* cdata = data.c_str(); //Преобразуем в c-строку
+			char* elem = strtok(const_cast<char*>(cdata), " "); //Разбиваем по разделителю на массив
+			int i = 0;
+			
+			while (elem != nullptr && i < 3) { //Идём по массиву строки, разбитой по разделителю и добавляем в вектор
+				elements.push_back(stoi(std::string(elem)));
+				elem = strtok(nullptr, " ");
+				i++;
+			}
+
+			/* Если не указан вес в 3 столбце, то задаём его по умолчанию = 1 */
+			if (elements.size() < 3) {
+				Graph::EdgesListElement NewEdge;
+				NewEdge.Start = elements[0] - 1;
+				NewEdge.End = elements[1] - 1;
+				NewEdge.Weight = 1;
+				this->EList.push_back(NewEdge);
+			}
+			else { //В ином случае берём вес из третьего столбца
+				Graph::EdgesListElement NewEdge;
+				NewEdge.Start = elements[0] - 1;
+				NewEdge.End = elements[1] - 1;
+				NewEdge.Weight = elements[2];
+				this->EList.push_back(NewEdge);
+			}
+		}
+	}
 }

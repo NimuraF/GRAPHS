@@ -56,8 +56,8 @@ public:
 
 	/* ФУНКЦИИ ПРЕДСТАВЛЕНИЯ И ВОЗВРАТА ЗНАЧЕНИЙ */
 	std::vector < std::vector <int> > & adjencyMatrix(); //Вернуть ссылку на матрицу смежности
-	std::vector <EdgesListElement> & edgesList(); //Вернуть список рёбер
-	std::vector <AdjencyListVertex> & adjencyList(); //Вернуть список смежности
-	std::vector < std::vector <int> > & adjencyListWW(); //Вернуть список смежности без весов
+	std::vector <EdgesListElement> & edgesList(); //Вернуть ссылку список рёбер
+	std::vector <AdjencyListVertex> & adjencyList(); //Вернуть ссылку список смежности
+	std::vector < std::vector <int> > & adjencyListWW(); //Вернуть ссылку список смежности без весов
 };
 
