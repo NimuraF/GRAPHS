@@ -123,6 +123,9 @@ bool Graph::isArc(int Start, int End) { //Проверяет, есть ли между вершинами дуг
 		return false;
 	}
 }
+int Graph::weight(int Start, int End) { //Возвращает вес ребра
+	return this->AMatrix[Start][End];
+}
 
 
 /* РЕАЛИЗАЦИЯ ФУНКЦИЙ ПАРСИНГА */

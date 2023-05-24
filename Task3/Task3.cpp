@@ -14,6 +14,7 @@ Task3::Task3(int argc, char** argv) {
 		if (this->getOutputFlag()) {
 			std::ofstream output;
 			output.open(this->getCurrentOutputPath());
+			output.close();
 		}
 
 		Graph MyGraph(this->getCurrentPath(), this->getCurrentFormat());
