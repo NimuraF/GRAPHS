@@ -68,7 +68,7 @@ void Task5::Deikstra(Graph& MyGraph) {
 						}
 					}
 				}
-				visited[i] == true;
+				visited[i] = true;
 			}
 		}
 		vertexC++;
@@ -87,7 +87,7 @@ void Task5::Deikstra(Graph& MyGraph) {
 	}
 	else {
 		if (!this->getOutputFlag()) {
-			std::cout << "Shortest path length between " << this->StartVertex << " and " << this->EndVertex << ": " << distances[this->EndVertex] << std::endl;
+			std::cout << "Shortest path length between " << this->StartVertex + 1 << " and " << this->EndVertex + 1 << ": " << distances[this->EndVertex] << std::endl;
 		}
 		else {
 			std::ofstream output;

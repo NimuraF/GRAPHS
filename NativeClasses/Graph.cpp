@@ -23,11 +23,23 @@ Graph::Graph(std::string path, int type) {
 			this->ELtoAM();
 			this->AMtoAL();
 			this->AMtoALWW();
-			break;
 		}
 		else {
 			throw MException("Не удалось корректно открыть файл!");
 		}
+		break;
+	}
+
+	case 3: {
+		if (this->parseAdjencyList(path)) {
+			this->ALtoEL();
+			this->ELtoAM();
+			this->AMtoALWW();
+		}
+		else {
+			throw MException("Не удалось корректно открыть файл!");
+		}
+		break;
 	}
 
 	}
@@ -56,7 +68,7 @@ std::vector < std::vector <int> >& Graph::adjencyListWW() { //Возвращает СПИСОК 
 }
 
 
-/* Реализация функций смены представлений */
+/* РЕАЛИЗАЦИЯ ФУНКЦИЙ СМЕНЫ ПРЕДСТАВЛЕНИЙ */
 void Graph::AMtoEL() { //Смена представления МАТРИЦА СМЕЖНОСТИ -> СПИСОК РЁБЕР
 	for (int i = 0; i < this->AMatrix.size(); i++) {
 		for (int j = 0; j < this->AMatrix.size(); j++) {
@@ -119,9 +131,21 @@ void Graph::ELtoAM() { //Смена представления СПИСОК РЁБЕР -> МАТРИЦА СМЕЖНОСТИ
 		AMatrix.push_back(row);
 	}
 }
+void Graph::ALtoEL() { //Смена представления СПИСОК СМЕЖНОСТИ -> СПИСОК РЁБЕР
+	for (int i = 0; i < this->AList.size(); i++) {
+		for (int j = 0; j < this->AList[i].VertexAndWeight.size(); j++) {
+			//Создаём структуру одной строки списка рёбер
+			EdgesListElement element;
+			element.Start = i;
+			element.End = this->AList[i].VertexAndWeight[j].Vertex;
+			element.Weight = this->AList[i].VertexAndWeight[j].Weight;
+			this->EList.push_back(element);
+		}
+	}
+}
 
 
-/* Основные функции графа */
+/* ОСНОВНЫЕ ФУНКЦИИ ГРАФА */
 bool Graph::isDirected() { //Функция, возвращающая true, если граф ориентированный и false - если нет
 	for (int i = 0; i < this->AMatrix.size(); i++) {
 		for (int j = 0; j < this->AMatrix.size(); j++) {
@@ -276,4 +300,61 @@ bool Graph::parseEdgesList(std::string path) {
 			}
 		}
 	}
+
+	file.close();
+}
+bool Graph::parseAdjencyList(std::string path) {
+	std::ifstream file; //Создаём поток для чтения из файла
+	file.open(path); //Открываем файл
+
+	/* Если файл не удалось открыть, бросаем исключение */
+	if (!file) {
+		return false;
+	}
+
+	int rows = 0;
+
+	std::string data; //Буфер для данных
+
+	/* Смотрим общее количество строк*/
+	while (!file.eof()) {
+		getline(file, data);
+		rows++;
+	}
+
+	/* Чистим флаги для правильного перемещения указателя */
+	file.clear();
+
+	/* Перемещаем указатель в начало файла */
+	file.seekg(0L, std::ios_base::beg);
+
+
+	int currentVertex = 0;
+	int currentRow = 0;
+
+	while (!file.eof() && currentRow < rows - 1) {
+		getline(file, data);
+		std::vector <AdjencyListVertexPair> adjencyVertexes; //Вектор смежных вершин
+		const char* cdata = data.c_str(); //Преобразуем в c-строку
+		char* elem = strtok(const_cast<char*>(cdata), " "); //Разбиваем по разделителю на массив
+
+		while (elem != nullptr) {
+			AdjencyListVertexPair Pair;
+			Pair.Vertex = atoi(elem) - 1;
+			Pair.Weight = 1;
+			adjencyVertexes.push_back(Pair);
+			elem = strtok(nullptr, " ");
+		}
+
+		AdjencyListVertex NewRow;
+		NewRow.Vertex = currentVertex;
+		NewRow.VertexAndWeight = adjencyVertexes;
+
+		this->AList.push_back(NewRow);
+		currentVertex++;
+		currentRow++;
+	}
+
+	file.close();
+
 }

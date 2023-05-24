@@ -26,7 +26,7 @@ private:
 	std::vector <std::vector<int> > AListWW; //Список смежности без весов
 
 
-	void ALtoAM(); //Метод для преобразования списка смежности в матрицу
+	void ALtoEL(); //Метод для преобразования списка смежности в список рёбер
 	void ELtoAM(); //Метод для преобразования списка ребёр в матрицу смежности
 	void AMtoEL(); //Метод для преобразования матрицы смежности в список рёбер
 	void AMtoAL(); //Метод для преобразования матрицы смежности в список смежности
@@ -34,6 +34,7 @@ private:
 
 	bool parseAdjencyMatrix(std::string path);
 	bool parseEdgesList(std::string path);
+	bool parseAdjencyList(std::string path);
 
 public:
 
