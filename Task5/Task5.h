@@ -4,10 +4,10 @@
 
 class Task5 : public Task {
 private:
-	int StartVertex = 0;
-	int EndVertex = 1;
+	int StartVertex = 0; //Начальная вершина
+	int EndVertex = 1; //Конечная вершина
 
-	std::vector < std::pair <int, std::pair <int, int> > > path;
+	std::vector < std::pair <int, std::pair <int, int> > > path; //Восстановленный путь
 public:
 	/* Технические параметры таска*/
 	Task5(int, char**);

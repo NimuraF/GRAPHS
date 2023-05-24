@@ -87,12 +87,12 @@ void Task5::Deikstra(Graph& MyGraph) {
 	}
 	else {
 		if (!this->getOutputFlag()) {
-			std::cout << "Shortest path length between" << this->StartVertex << " and " << this->EndVertex << ": " << distances[this->EndVertex] << std::endl;
+			std::cout << "Shortest path length between " << this->StartVertex << " and " << this->EndVertex << ": " << distances[this->EndVertex] << std::endl;
 		}
 		else {
 			std::ofstream output;
 			output.open(this->getCurrentOutputPath(), std::ios::app);
-			output << "Shortest path length between" << this->StartVertex << " and " << this->EndVertex << ": " << distances[this->EndVertex] << std::endl;
+			output << "Shortest path length between " << this->StartVertex << " and " << this->EndVertex << ": " << distances[this->EndVertex] << std::endl;
 			output.close();
 		}
 		int currentEndVertex = this->EndVertex;
