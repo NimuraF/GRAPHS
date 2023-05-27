@@ -175,6 +175,12 @@ bool Graph::isArc(int Start, int End) { //Проверяет, есть ли между вершинами дуг
 int Graph::weight(int Start, int End) { //Возвращает вес ребра
 	return this->AMatrix[Start][End];
 }
+std::vector <int> Graph::AdjVertexes(int Vertex) { //Возвращает вектор смежных вершин без весов
+
+	std::vector <int> adjvertexes = adjencyListWW()[Vertex];
+
+	return adjvertexes;
+}
 
 
 /* РЕАЛИЗАЦИЯ ФУНКЦИЙ ПАРСИНГА */
