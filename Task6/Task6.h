@@ -22,11 +22,13 @@ public:
 	void keys() override;
 	bool parseFlags(int argc, char** argv) override;
 	void showPaths();
+	void clearContainers();
 
 	/* ВЗАИМОДЕЙСТВИЕ С ГРАФОМ */
 	void chooseAlg(Graph&); //Функция выбора алгоритма
 	void checkNegativeEdges(Graph&); //Функция проверки рёбер с отрицательным весом
 	void Deikstra(Graph&); //Алгоритм Дейкстры
-	void BellmanFord(Graph&); //Алгоритм Беллмана-Форда
+	bool BellmanFord(Graph&); //Алгоритм Беллмана-Форда
+	void Levit(Graph&); //Алгоритм Левита
 };
 

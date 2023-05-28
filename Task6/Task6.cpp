@@ -37,25 +37,66 @@ void Task6::chooseAlg(Graph& MyGraph) {
 		}
 		else {
 			this->Deikstra(MyGraph);
+			this->showPaths();
 		}
 		break;
 	}
 
 	case 2: {
 		this->BellmanFord(MyGraph);
+		this->showPaths();
+		break;
+	}
+
+	case 3: {
+		if (this->BellmanFord(MyGraph)) {
+			this->Levit(MyGraph);
+		}
+		this->showPaths();
+		break;
 	}
 
 	}
-
-
-	this->showPaths();
 }
 
 /* Функция вывода путей */
 void Task6::showPaths() {
-	std::cout << "Shortest paths lengths:" << std::endl;
-	for (int i = 0; i < this->Paths.size(); i++) {
-		std::cout << this->StartVertex + 1 << " - " << this->Paths[i].first + 1 << " : " << this->Paths[i].second << std::endl;
+	if (!this->getOutputFlag()) {
+		if (this->negativeCycle == false) {
+			if (this->isNegativeEdges == false) {
+				std::cout << "Graph doesn't contain edges with negative weight!" << std::endl;
+			}
+			else {
+				std::cout << "Graph contain edges with negative weight!" << std::endl;
+			}
+			std::cout << "Shortest paths lengths:" << std::endl;
+			for (int i = 0; i < this->Paths.size(); i++) {
+				std::cout << this->StartVertex + 1 << " - " << this->Paths[i].first + 1 << " : " << this->Paths[i].second << std::endl;
+			}
+		}
+		else {
+			std::cout << "Graph containts negative cycle" << std::endl;
+		}
+	}
+	else {
+		std::ofstream output;
+		output.open(this->getCurrentOutputPath(), std::ios::app);
+		if (this->negativeCycle == false) {
+			if (this->isNegativeEdges == false) {
+				output << "Graph doesn't contain edges with negative weight!" << std::endl;
+			}
+			else {
+				output << "Graph contain edges with negative weight!" << std::endl;
+			}
+			output << "Shortest paths lengths:" << std::endl;
+			for (int i = 0; i < this->Paths.size(); i++) {
+				output << this->StartVertex + 1 << " - " << this->Paths[i].first + 1 << " : " << this->Paths[i].second << std::endl;
+			}
+		}
+		else {
+			output << "Graph containts negative cycle" << std::endl;
+		}
+		output.close();
 	}
 }
 
@@ -77,7 +118,9 @@ void Task6::checkNegativeEdges(Graph& MyGraph) {
 }
 
 /* АЛГОРИТМ БЕЛЛМАНА-ФОРДА*/
-void Task6::BellmanFord(Graph& MyGraph) {
+bool Task6::BellmanFord(Graph& MyGraph) {
+
+	this->clearContainers();
 
 	/* Вектор расстояний */
 	std::vector <int> distances;
@@ -115,15 +158,107 @@ void Task6::BellmanFord(Graph& MyGraph) {
 		for (int i = 0; i < distances.size(); i++) {
 			this->Paths.push_back(std::pair<int, int>(i, distances[i]));
 		}
+		return true;
 	}
 	else {
-		std::cout << "Graph contains negative cycle" << std::endl;
+		return false;
 	}
+}
+
+/* АЛГОРИТМ ЛЕВИТА */
+void Task6::Levit(Graph& MyGraph) {
+
+	this->clearContainers();
+
+	/* Вектор расстояний */
+	std::vector <int> distances;
+
+	/* Изначально до всех вершин расстояние бесконечно */
+	for (int i = 0; i < MyGraph.adjencyMatrix().size(); i++) {
+		distances.push_back(INF);
+	}
+
+	/* У начальной вершины расстояние 0 */
+	distances[this->StartVertex] = 0;
+
+	std::vector <int> M0; //Множество, до которого уже вычислены расстояния
+
+	std::vector <int> M1U; //Обычная очередь
+	std::vector <int> M1S; //Срочная очередь
+
+	std::vector <int> M2; //Множество, до которого расстояние ещё не вычислено
+
+	M1U.push_back(this->StartVertex); //Пушим стартовую вершину в обычную очередь
+
+
+	/* Все остальные вершины в множество M2 */
+	for (int i = 0; i < MyGraph.adjencyMatrix().size(); i++) {
+		if (i != this->StartVertex) {
+			M2.push_back(i);
+		}
+	}
+
+
+	while (!M1U.empty()) {
+		int currentVertex;
+		if (!M1S.empty()) {
+			currentVertex = M1S.front();
+			M1S.erase(M1S.begin());
+		}
+		else {
+			currentVertex = M1U.front();
+			M1U.erase(M1U.begin());
+		}
+		
+		for (int i = 0; i < MyGraph.adjencyMatrix().size(); i++) {
+			if (MyGraph.adjencyMatrix()[currentVertex][i] != 0 && i != currentVertex) {
+				std::vector <int>::iterator it;
+				/* ПРОВЕРЯЕМ МНОЖЕСТВО M2 */
+				it = std::find(M2.begin(), M2.end(), i);
+				if (it != M2.end()) {
+					distances[i] = distances[currentVertex] + MyGraph.adjencyMatrix()[currentVertex][i];
+					M1U.push_back(i);
+					M2.erase(it);
+				}
+				
+				/* ПРОВЕРЯЕМ ОБЫЧНУЮ ОЧЕРЕДЬ */
+				it = std::find(M1U.begin(), M1U.end(), i);
+				if (it != M1U.end()) {
+					distances[i] = std::min(distances[i], distances[currentVertex] + MyGraph.adjencyMatrix()[currentVertex][i]);
+				}
+				
+				/* ПРОВЕРЯЕМ СРОЧНУЮ ОЧЕРЕДЬ */
+				it = std::find(M1S.begin(), M1S.end(), i);
+				if (it != M1S.end()) {
+					distances[i] = std::min(distances[i], distances[currentVertex] + MyGraph.adjencyMatrix()[currentVertex][i]);
+				}
+				
+				/* ПРОВЕРЯЕМ МНОЖЕСТВО M0 (ВЫЧИСЛЕННЫХ ВЕРШИН) */
+				it = std::find(M0.begin(), M0.end(), i);
+				if (it != M0.end()) {
+					if (distances[i] > distances[currentVertex] + MyGraph.adjencyMatrix()[currentVertex][i]) {
+						distances[i] = distances[currentVertex] + MyGraph.adjencyMatrix()[currentVertex][i];
+						M1S.push_back(i);
+						M0.erase(it);
+					}
+				}
+
+			}
+		}
+		M0.push_back(currentVertex);
+ 	}
+
+	for (int i = 0; i < distances.size(); i++) {
+		this->Paths.push_back(std::pair<int, int>(i, distances[i]));
+	}
+
 }
 
 /* АЛГОРИТМ ДЕЙКСТРЫ */
 void Task6::Deikstra(Graph& MyGraph) {
 
+	this->clearContainers();
+	
 	/* Вектор посещённых вершин */
 	std::vector <bool> visited;
 
@@ -176,6 +311,11 @@ void Task6::Deikstra(Graph& MyGraph) {
 		this->Paths.push_back(std::pair<int, int>(i, distances[i]));
 	}
 
+}
+
+/* Очистка контейнеров */
+void Task6::clearContainers() {
+	this->Paths.clear();
 }
 
 /* Переопределение ключей*/
