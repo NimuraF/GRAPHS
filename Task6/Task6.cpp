@@ -198,7 +198,7 @@ void Task6::Levit(Graph& MyGraph) {
 		}
 	}
 
-
+	/* Алгоритм Левита */
 	while (!M1U.empty()) {
 		int currentVertex;
 		if (!M1S.empty()) {
