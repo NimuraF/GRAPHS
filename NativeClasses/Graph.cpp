@@ -109,7 +109,16 @@ void Graph::AMtoALWW() { //Смена представления МАТРИЦА СМЕЖНОСТИ -> СПИСОК СМЕЖН
 	}
 }
 void Graph::ELtoAM() { //Смена представления СПИСОК РЁБЕР -> МАТРИЦА СМЕЖНОСТИ
-	int VC = this->EList[EList.size() - 1].Start + 1;
+	int VC = 0;
+	for (int i = 0; i < this->EList.size(); i++) {
+		if (this->EList[i].Start > VC) {
+			VC = this->EList[i].Start;
+		}
+		if (this->EList[i].End > VC) {
+			VC = this->EList[i].End;
+		}
+	}
+	VC += 1;
 	for (int i = 0; i < VC; i++) {
 		std::vector < std::pair <int, int> > rows;
 		for (int z = 0; z < this->EList.size(); z++) {
@@ -117,8 +126,8 @@ void Graph::ELtoAM() { //Смена представления СПИСОК РЁБЕР -> МАТРИЦА СМЕЖНОСТИ
 				rows.push_back(std::pair <int, int>(EList[z].End, EList[z].Weight));
 			}
 		}
-
 		std::vector <int> row;
+
 		/* Сначала всё зануляем */
 		for (int j = 0; j < VC; j++) {
 			row.push_back(0);
@@ -306,7 +315,6 @@ bool Graph::parseEdgesList(std::string path) {
 			}
 		}
 	}
-
 	file.close();
 }
 bool Graph::parseAdjencyList(std::string path) {
