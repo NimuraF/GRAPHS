@@ -39,6 +39,9 @@
     <ClCompile Include="parseOut.cpp">
       <Filter>Исходные файлы\NativeClasses</Filter>
     </ClCompile>
+    <ClCompile Include="CMap.cpp">
+      <Filter>Исходные файлы\NativeClasses</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Graph.h">
@@ -54,6 +57,9 @@
       <Filter>Файлы заголовков\NativeClasses</Filter>
     </ClInclude>
     <ClInclude Include="parseOut.h">
+      <Filter>Файлы заголовков\NativeClasses</Filter>
+    </ClInclude>
+    <ClInclude Include="CMap.h">
       <Filter>Файлы заголовков\NativeClasses</Filter>
     </ClInclude>
   </ItemGroup>
