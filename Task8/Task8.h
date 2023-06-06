@@ -17,13 +17,16 @@ public:
 	Task8(int, char**);
 	void keys() override;
 	bool parseFlags(int argc, char** argv) override;
+	void logOutput(std::ostream&, std::vector < std::pair <int, int> > &, int, std::string); //Функция для вывода в файл / на экран
 
 	/* ФУНКЦИИ РАБОТЫ С КАРТОЙ */
-	void findPath(CMap&); //Поиск пути
+	void findPath(CMap&, int); //Поиск пути
 	int getRange(CMap&, std::pair <int, int>, std::pair <int, int>); //Вычисление и возврат расстояния между вершинами
 
 
 	/* ЭВРИСТИКИ */
 	int hManhatton(std::pair <int, int>, std::pair <int, int>); //Манхэттонское расстояние
+	int hChebyshev(std::pair <int, int>, std::pair <int, int>); //Чебышева расстояние
+	int hEvklid(std::pair <int, int>, std::pair <int, int>); //Евклидово расстояние
 };
 
