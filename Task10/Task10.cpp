@@ -22,7 +22,6 @@ Task10::Task10(int argc, char** argv) {
 		Graph MyGraph(this->getCurrentPath(), this->getCurrentFormat());
 
 		this->FordFalkerson(MyGraph);
-
 	}
 }
 
@@ -49,7 +48,7 @@ void Task10::StockSource(Graph & MyGraph) {
 	}
 }
 
-/* АЛГОРИТМ ФОЛДА-ФАЛКЕРСОНА */
+/* АЛГОРИТМ ФОРДА-ФАЛКЕРСОНА */
 void Task10::FordFalkerson(Graph& MyGraph) {
 
 	/* Определяем сток и источник */
