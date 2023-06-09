@@ -12,6 +12,8 @@ class Task8 : public Task {
 	std::pair <int, int> beginCell; //Начальная вершина (в виде строки | столбца) в матрице смежности
 	std::pair <int, int> endCell; //Конечная вершина (в виде строки | столбца) в матрице смежности
 
+	double visistedPercent; //Процент посещённых клеток
+
 public:
 	/* Технические параметры таска*/
 	Task8(int, char**);

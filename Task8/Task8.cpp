@@ -60,7 +60,7 @@ void Task8::findPath(CMap & MyMap, int alg) {
 		for (int p = 0; p < MyMap.neighbors(currentCell).size(); p++) {
 			auto neighbor = MyMap.neighbors(currentCell)[p];
 			int newDistance = distancies[currentCell] + this->getRange(MyMap, currentCell, neighbor);
-			if (!came_from.count(neighbor)) {
+			if (!came_from.count(neighbor) || newDistance < distancies[neighbor]) {
 				int priority;
 				switch (alg) {
 
@@ -131,6 +131,9 @@ void Task8::findPath(CMap & MyMap, int alg) {
 
 	std::reverse(path.begin(), path.end());
 
+	/* Вычисляем процент просмотренных клеток от их общего числа */
+	this->visistedPercent = ( (double) distancies.size() / (MyMap.getMap().size() * MyMap.getMap()[0].size())) * 100;
+
 	if (this->getOutputFlag()) {
 		std::ofstream file;
 		file.open(this->getCurrentOutputPath(), std::ios::app);
@@ -152,6 +155,7 @@ void Task8::logOutput(std::ostream& streamOut, std::vector < std::pair <int, int
 		streamOut << "(" << path[i].first << " - " << path[i].second << ")";
 	}
 	streamOut << "]" << std::endl << std::endl;
+	streamOut << "Visited cells percent: " << this->visistedPercent << "%" << std::endl;
 }
 
 /* Получить расстояние между клетками */
